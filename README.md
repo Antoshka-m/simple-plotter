@@ -1,2 +1,3 @@
 # simple-plotter
-Simple plotting
+Simple plotting of mathematical functions written in Python with matplotlib & tkinter GUI.
+
