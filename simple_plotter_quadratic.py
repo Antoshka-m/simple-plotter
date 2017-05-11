@@ -25,19 +25,24 @@ def plotting_tk(a, b, c):   #plotting quadratic function with given coefficients
     canvas.show()
     plot_widget = canvas.get_tk_widget()
     x = np.linspace(-10,10,100)
-    plt.plot([x for x in x], [a*(x**2)+b*x+c for x in x], label = r'$Y = '+str(a)+r'x^2'+' + '+str(b)+'x'+' + '+str(c)+'$')
+    plot_color = color_strvar.get()
+    if plot_color =="default": #default color (determined by color palette)
+        plot_color=None
+    plt.plot([x for x in x], [a*(x**2)+b*x+c for x in x],
+             label = r'$Y = '+str(a)+r'x^2'+' + '+str(b)+'x'+' + '+str(c)+'$', color=plot_color)
     plt.xlabel("X", fontsize=20)
     plt.ylabel("Y", fontsize=20)
     plt.xticks(fontsize = 14) 
     plt.yticks(fontsize = 14) 
     plt.tight_layout()
     plt.legend()
-    plt.grid()
-    plot_widget.grid(row=0, column = 3, columnspan=3, rowspan=4) #placing canvas 
+    if int(grid_strvar.get())==1:
+        plt.grid()
+    plot_widget.grid(row=0, column = 6, columnspan=3, rowspan=5) #placing canvas 
     toolbar_frame = Tk.Frame(root) #toolbar as separate frame to avoid conflict between grid and pack. (Navigation toolbar has paack already)
     toolbar_frame = NavigationToolbar2TkAgg(canvas, root) 
     toolbar_frame.update()
-    toolbar_frame.grid(row=5, column=3) #placing 
+    toolbar_frame.grid(row=6, column=6) #placing 
 
     
 def get_values(): #getting coefficient values from entry forms and execution plotting function
@@ -52,6 +57,9 @@ def get_values(): #getting coefficient values from entry forms and execution plo
 
 root=Tk.Tk() #initialize tkinter
 root.protocol('WM_DELETE_WINDOW', close_all)  
+#root.attributes('-fullscreen', True)
+w, h = root.winfo_screenwidth(), root.winfo_screenheight()
+root.geometry("%dx%d+0+0" % (w, h))
 var_a = Tk.StringVar(root)
 var_b= Tk.StringVar(root)
 var_c= Tk.StringVar(root)
@@ -85,5 +93,19 @@ button_get.config(font=(None, 15))
 button_get.grid(row=5, column=0)
 button_quit=Tk.Button(root, text="Quit", command=close_all) # quit button
 button_quit.config(font=(None, 15))
-button_quit.grid(row=0, column=2)
+button_quit.grid(row=0, column=5)
+color_l = Tk.Label(master=root, width=5, height=2, bd =2, text="color", anchor="e") #color label
+color_l.config(font=(None, 15))
+color_l.grid(row=1, column=4)
+colors_list=("default", "red", "blue", "green", "yellow", "black", "magenta")
+color_strvar=Tk.StringVar(root)
+color_strvar.set(colors_list[0])
+colors_om=Tk.OptionMenu(root, color_strvar, *colors_list) #option (list) menu of colors
+colors_om.config(font=(None, 15))
+colors_om.grid(row=1, column=5)
+grid_strvar=Tk.StringVar(root)
+grid_strvar.set(1)
+grid_cb = Tk.Checkbutton(root, text="grid", variable=grid_strvar)
+grid_cb.config(font=(None, 15))
+grid_cb.grid(row=2, column=5)
 root.mainloop()
